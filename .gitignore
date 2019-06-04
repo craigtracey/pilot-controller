@@ -1,0 +1,5 @@
+build
+.eggs
+*.egg-info
+AUTHORS
+ChangeLog

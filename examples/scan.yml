@@ -1,0 +1,5 @@
+apiVersion: harbor.vmware.com/v1
+kind: PilotScan
+metadata:
+  name: test
+
