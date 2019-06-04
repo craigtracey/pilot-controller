@@ -39,8 +39,6 @@ spec:
       labels:
         app: pilot-controller
     spec:
-      #nodeSelector:
-      #  kubernetes.io/hostname: ip-10-0-26-37.ec2.internal
       containers:
       - name: controller
         image: ctracey/pilot-controller

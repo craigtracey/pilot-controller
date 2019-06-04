@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+import argparse
+import subprocess
+import yaml
+
+from prettytable import PrettyTable
+
+
+def get_scan(scan, minsev, allpods):
+    output = None
+    try:
+        output = subprocess.check_output(['kubectl', 'get', '-o', 'yaml', 'pilotscan', scan])
+    except subprocess.CalledProcessError as e:
+        print "No resources found"
+        return 
+
+    data = yaml.load(output)
+    x = PrettyTable()
+    x.field_names = ["namespace", "pod", "container", "image", "severity"]
+    
+    for result in data['status']['results']:
+        severity = '?'
+        if 'severity' in result:
+            severity =  result['severity']
+
+        if not allpods and (severity == '?' or severity < minsev):
+            continue
+
+        x.add_row([result['namespace'], result['pod'], result['container'], result['image'], severity])
+
+    print x
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command', choices=['list'])
+    parser.add_argument('scan')
+    parser.add_argument('--minsev', type=int, default=-1)
+    parser.add_argument('--allpods', default=False, action='store_true')
+
+    args = parser.parse_args()
+    get_scan(args.scan, args.minsev, args.allpods)
+
+
+if __name__ == '__main__':
+    main()
