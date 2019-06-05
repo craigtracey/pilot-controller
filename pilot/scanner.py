@@ -28,9 +28,12 @@ def scan(resource):
         for container in pod.spec.containers:
 	    if container.image.startswith(BASE):
                 path = re.sub(BASE, '', container.image)
-                image, tag = path.split(':')
-                if not tag:
+                parts = path.split(':')
+                if len(parts) == 1:
                     tag = 'latest'
+                else:
+                    tag = parts[1]
+                image = parts[0]
                 headers = {
                      "Content-Type": "application/json"
                 }
